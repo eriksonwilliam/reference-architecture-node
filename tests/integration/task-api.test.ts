@@ -51,6 +51,14 @@ describe('API de Tasks', () => {
     expect(res.json()).toEqual({ status: 'ok' });
   });
 
+  it('GET /docs/json expoe a especificacao OpenAPI', async () => {
+    const res = await app.inject({ method: 'GET', url: '/docs/json' });
+    expect(res.statusCode).toBe(200);
+    const spec = res.json<{ openapi: string; paths: Record<string, unknown> }>();
+    expect(spec.openapi).toBeDefined();
+    expect(spec.paths['/tasks']).toBeDefined();
+  });
+
   it('POST /tasks cria uma tarefa (201)', async () => {
     const res = await app.inject({
       method: 'POST',

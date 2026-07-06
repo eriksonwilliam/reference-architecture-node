@@ -20,34 +20,58 @@ export async function registerTaskRoutes(
   app: FastifyInstance,
   useCases: TaskUseCases,
 ): Promise<void> {
-  app.post('/tasks', async (request, reply) => {
-    const body = createTaskBodySchema.parse(request.body);
-    const task = await useCases.createTask.execute(body);
-    return reply.status(201).send(task);
-  });
+  app.post(
+    '/tasks',
+    { schema: { tags: ['tasks'], summary: 'Cria uma tarefa' } },
+    async (request, reply) => {
+      const body = createTaskBodySchema.parse(request.body);
+      const task = await useCases.createTask.execute(body);
+      return reply.status(201).send(task);
+    },
+  );
 
-  app.get('/tasks', async () => {
-    return useCases.listTasks.execute();
-  });
+  app.get(
+    '/tasks',
+    { schema: { tags: ['tasks'], summary: 'Lista todas as tarefas' } },
+    async () => {
+      return useCases.listTasks.execute();
+    },
+  );
 
-  app.get('/tasks/:id', async (request) => {
-    const { id } = taskIdParamsSchema.parse(request.params);
-    return useCases.getTask.execute(id);
-  });
+  app.get(
+    '/tasks/:id',
+    { schema: { tags: ['tasks'], summary: 'Busca uma tarefa por id' } },
+    async (request) => {
+      const { id } = taskIdParamsSchema.parse(request.params);
+      return useCases.getTask.execute(id);
+    },
+  );
 
-  app.post('/tasks/:id/start', async (request) => {
-    const { id } = taskIdParamsSchema.parse(request.params);
-    return useCases.startTask.execute(id);
-  });
+  app.post(
+    '/tasks/:id/start',
+    { schema: { tags: ['tasks'], summary: 'Inicia uma tarefa' } },
+    async (request) => {
+      const { id } = taskIdParamsSchema.parse(request.params);
+      return useCases.startTask.execute(id);
+    },
+  );
 
-  app.post('/tasks/:id/complete', async (request) => {
-    const { id } = taskIdParamsSchema.parse(request.params);
-    return useCases.completeTask.execute(id);
-  });
+  app.post(
+    '/tasks/:id/complete',
+    { schema: { tags: ['tasks'], summary: 'Conclui uma tarefa' } },
+    async (request) => {
+      const { id } = taskIdParamsSchema.parse(request.params);
+      return useCases.completeTask.execute(id);
+    },
+  );
 
-  app.delete('/tasks/:id', async (request, reply) => {
-    const { id } = taskIdParamsSchema.parse(request.params);
-    await useCases.deleteTask.execute(id);
-    return reply.status(204).send();
-  });
+  app.delete(
+    '/tasks/:id',
+    { schema: { tags: ['tasks'], summary: 'Remove uma tarefa' } },
+    async (request, reply) => {
+      const { id } = taskIdParamsSchema.parse(request.params);
+      await useCases.deleteTask.execute(id);
+      return reply.status(204).send();
+    },
+  );
 }
