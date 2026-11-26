@@ -92,6 +92,23 @@ curl -X POST http://localhost:3000/tasks \
   -d '{"title": "Estudar arquitetura hexagonal"}'
 ```
 
+### Erros de validação (400)
+
+O corpo é estável e independe da biblioteca de validação:
+
+```json
+{
+  "error": "ValidationError",
+  "message": "Requisicao invalida.",
+  "details": [{ "field": "id", "code": "invalid_format", "message": "Formato invalido." }]
+}
+```
+
+`code` é um de `invalid_type`, `invalid_format`, `too_small`, `too_big`,
+`invalid_value` ou `invalid`. Detalhes internos do schema (regex, valor
+recebido) nunca saem na resposta. Decisão em
+[docs/adr/0001-contrato-de-erro-de-validacao.md](docs/adr/0001-contrato-de-erro-de-validacao.md).
+
 ## Scripts
 
 | Script              | Descrição                                  |

@@ -78,7 +78,12 @@ describe('API de Tasks', () => {
       payload: { description: 'sem titulo' },
     });
     expect(res.statusCode).toBe(400);
-    expect(res.json<{ error: string }>().error).toBe('ValidationError');
+    // Contrato fixo: independe da versão do Zod.
+    expect(res.json()).toEqual({
+      error: 'ValidationError',
+      message: 'Requisicao invalida.',
+      details: [{ field: 'title', code: 'invalid_type', message: 'Campo ausente ou com tipo invalido.' }],
+    });
   });
 
   it('GET /tasks lista as tarefas', async () => {
@@ -105,7 +110,12 @@ describe('API de Tasks', () => {
   it('GET /tasks/:id retorna 400 para uuid invalido', async () => {
     const res = await app.inject({ method: 'GET', url: '/tasks/nao-e-uuid' });
     expect(res.statusCode).toBe(400);
-    expect(res.json<{ error: string }>().error).toBe('ValidationError');
+    expect(res.json()).toEqual({
+      error: 'ValidationError',
+      message: 'Requisicao invalida.',
+      details: [{ field: 'id', code: 'invalid_format', message: 'Formato invalido.' }],
+    });
+    expect(res.body).not.toContain('pattern');
   });
 
   it('POST /tasks/:id/start move para in_progress', async () => {
