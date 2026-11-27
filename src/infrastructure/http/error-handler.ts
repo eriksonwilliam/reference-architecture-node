@@ -5,6 +5,7 @@ import {
   InvalidTaskStatusTransitionError,
   TaskNotFoundError,
 } from '../../domain/errors';
+import { toValidationIssues } from './validation-issues';
 
 /**
  * Mapeia erros das camadas internas para respostas HTTP consistentes.
@@ -23,7 +24,7 @@ export function errorHandler(
     reply.status(400).send({
       error: 'ValidationError',
       message: 'Requisicao invalida.',
-      details: error.issues,
+      details: toValidationIssues(error),
     });
     return;
   }
